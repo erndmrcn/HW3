@@ -19,7 +19,135 @@ global stateNodes
 # holds (state, Node)
 stateNodes = []
 
+# empty tictactoe board
+tictactoe = [
+                [0, 0, 0], 
+                [0, 0, 0], 
+                [0, 0, 0]
+             ]
+
+def deepCopy(arr):
+    result = []
+    for row in arr:
+        temp = []
+        for column in row:
+            temp.append(column)
+        result.append(temp)
+    return result
+
+def terminalState(state):
+    row1 = state[:3]
+    if row1[0] == row1[1] and row1[1] == row1[2]:
+        # terminate
+        return True
+
+    row2 = state[3:6]
+    if row2[0] == row2[1] and row2[1] == row2[2]:
+        # terminate
+        return True
+
+    row3 = state[6:9]
+    if row3[0] == row3[1] and row3[1] == row3[2]:
+        # terminate
+        return True
+
+    diagonal1 = state[0::4]
+    if diagonal1[0] == diagonal1[1] and diagonal1[1] == diagonal1[2]:
+        # terminage
+        return True
+
+    diagonal2 = state[2:8:2]
+    if diagonal2[0] == diagonal2[1] and diagonal2[1] == diagonal2[2]:
+        # terminage
+        return True
+    
+    column1 = state[0::3]
+    if column1[0] == column1[1] and column1[1] == column1[2]:
+        # terminate
+        return True
+
+    column2 = state[1::3]
+    if column2[0] == column2[1] and column2[1] == column2[2]:
+        # terminate
+        return True
+
+    column3 = state[2::3]
+    if column3[0] == column3[1] and column3[1] == column3[2]:
+        # terminate
+        return True
+
+    if len(state) == 9:
+        return True
+
+
+def expand(currentState, symbol):
+    # Order -> (0, 0), (1, 0), (2, 0)
+    #          (0, 1), (1, 1), (2, 1)
+    #          (0, 2), (1, 2), (2, 2)
+    childs = []
+    arr = stateToArray(currentState)
+    
+    if arr[0][0] == ' ':
+        tempArr = deepCopy(arr)
+        tempArr[0][0] = symbol
+        childs.append(arrayToState(tempArr))
+    if arr[1][0] == ' ':
+        tempArr = deepCopy(arr)
+        tempArr[1][0] = symbol
+        childs.append(arrayToState(tempArr))
+    if arr[2][0] == ' ':
+        tempArr = deepCopy(arr)
+        tempArr[2][0] = symbol
+        childs.append(arrayToState(tempArr))
+
+
+    if arr[0][1] == ' ':
+        tempArr = deepCopy(arr)
+        tempArr[0][1] = symbol
+        childs.append(arrayToState(tempArr))
+    if arr[1][1] == ' ':
+        tempArr = deepCopy(arr)
+        tempArr[1][1] = symbol
+        childs.append(arrayToState(tempArr))
+    if arr[2][1] == ' ':
+        tempArr = deepCopy(arr)
+        tempArr[2][1] = symbol
+        childs.append(arrayToState(tempArr))
+
+
+    if arr[0][2] == ' ':
+        tempArr = deepCopy(arr)
+        tempArr[0][2] = symbol
+        childs.append(arrayToState(tempArr))
+    if arr[1][2] == ' ':
+        tempArr = deepCopy(arr)
+        tempArr[2][2] = symbol
+        childs.append(arrayToState(tempArr))
+    if arr[2][2] == ' ':
+        tempArr = deepCopy(arr)
+        tempArr[2][2] = symbol
+        childs.append(arrayToState(tempArr))
+
+    return childs
+
 # utilities
+def arrayToState(arr):
+    result = ""
+    for e in arr:
+        for a in e:
+            result += a
+
+    return result
+
+def stateToArray(state):
+    result = []
+    for i in range(3):
+        temp = []
+        for j in range(3):
+            temp.append(state[i*3 + j])
+        result.append(temp)
+    return result
+
 # main function
 
 def readFile(fileName):
@@ -27,7 +155,21 @@ def readFile(fileName):
 
     # read tictactoe
     if fileName[0] == 't':
-        pass
+        with open(fileName) as f:
+            lines = f.readlines()
+
+        lines = [ele.replace('\n', '') for ele in lines]
+
+        result = []
+        for row in lines:
+            temp = []
+            for column in row:
+                temp.append(column)
+            result.append(temp)
+
+        state = arrayToState(result)
+        root = Node(None, None, state, None, None)
+
     # read gametree
     elif fileName[0] == 'g':
         with open(fileName) as f:
@@ -68,6 +210,21 @@ def readFile(fileName):
 def findNode(state):
     global root
 
+    return
+
+def minimax_decision_ttt():
+    v_max = -2000000
+    v_min = 2000000
+    v = []
+    depth = 0
+    childs = expand(root, depth)
+    
+    return
+
+def max_value_ttt(currentState):
+    return
+
+def min_value_ttt(currentState):
     return
 
 def minimax_decision(min_max):
@@ -126,7 +283,8 @@ def SolveGame(methodName, problemFileName, playerType):
     # fileName - gametree or tictactoe
     # playerType - MAX or MIN
     readFile(problemFileName)
-    f = minimax_decision(playerType)
-    return f
+    # f = minimax_decision(playerType)
+    return
 
-print(SolveGame("s", "gametree1.txt", "MIN"))
+print(SolveGame("s", "tictactoe1.txt", "MAX"))
+print(expand(root.state, 'X'))
